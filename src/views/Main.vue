@@ -3,7 +3,6 @@
     <div class="top">
       <h1>油烟可视化管理平台</h1>
       <h2></h2>
-      <button @click="updated">更新设备信息</button>
     </div>
     <div>
       <router-view></router-view>

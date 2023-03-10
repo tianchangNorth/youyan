@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="app">
     <!-- 主体部分 -->
     <div class="body">
       <div class="body-head">
@@ -14,25 +14,7 @@
         <div class="body-buttom-head">
           <img src="../assets/icon04.png" alt="" />&nbsp; 监控列表
         </div>
-        <table>
-          <tr>
-            <th v-for="(item, index) in cityHeaders" :key="index">
-              {{ item.categories }}
-            </th>
-          </tr>
-          <tr
-            v-for="(item, index) in tableData"
-            :key="index"
-            @click="gotoNewPer(item)"
-          >
-            <td>{{ item.设备ID }}</td>
-            <td>{{ item.风机状态 }}</td>
-            <td>{{ item.净化器状态 }}</td>
-            <td>{{ item.传感器状态 }}</td>
-            <td>{{ item.油烟浓度 }}</td>
-            <td>{{ item.日期 }}</td>
-          </tr>
-        </table>
+        <TableList></TableList>
       </div>
     </div>
     <!-- 左侧主体 -->
@@ -95,19 +77,19 @@
           <h4>数据记录</h4>
         </div>
         <img src="../assets/bottom_line.png" alt="" />
-        <div
-          id="right3-echarts"
-          style="width: 355px; height: 320px; margin-left: 20px"
-        ></div>
+        <Echarts4></Echarts4>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import axios from "axios";
 import Echarts1 from "../components/Echarts1.vue";
 import Echarts2 from "../components/Echarts2.vue";
 import Echarts3 from "../components/Echarts3.vue";
+import Echarts4 from "../components/Echarts4.vue";
+import TableList from "../components/TableList.vue";
 import EchartsMap from "../components/EchartsMap.vue";
 export default {
   name: "DataBase",
@@ -116,18 +98,35 @@ export default {
     Echarts2,
     Echarts3,
     EchartsMap,
+    Echarts4,
+    TableList,
   },
   data() {
     return {
-      cityHeaders: [],
       gzInfo: [],
-      tableData: [],
+      gzNum: 0,
+      gjNum: 0,
     };
+  },
+  methods: {
+    getInfo() {
+      var this_ = this;
+      axios.get("http://127.0.0.1/DeviceState/showErrorLog").then((res) => {
+        this_.gzInfo = res.data;
+        this_.gzNum = res.data.length;
+        this_.gjNum = res.data.length;
+      });
+    },
+  },
+  mounted() {
+    setInterval(() => {
+      this.getInfo();
+    }, 5000);
   },
 };
 </script>
 
-<style>
+<style scoped>
 .body {
   position: absolute;
   margin-left: 425px;
@@ -270,26 +269,7 @@ export default {
 .body-head {
   text-align: center;
 }
-table {
-  width: 950px;
-  height: 180px;
-  color: white;
-  margin-left: 50px;
-  cursor: pointer;
-}
-tr:hover {
-  background-color: skyblue;
-}
-table,
-td,
-th {
-  border: 1px solid #0e4ae0;
-  border-collapse: collapse;
-  text-align: center;
-}
-th {
-  font-size: 14px;
-}
+
 .b1 {
   border-color: red;
   background-color: red;

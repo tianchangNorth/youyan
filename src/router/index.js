@@ -8,7 +8,7 @@ const router =  new VueRouter({
     routes:[          
         {path:'/',redirect:'/base',component:Main},
         {path:'/base',component:DataBase},
-        {path:'/show',component:DataShow}
+        {name:'datashow',path:'/show',component:DataShow}
 
     ]
 })

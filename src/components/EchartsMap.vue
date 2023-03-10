@@ -1,13 +1,20 @@
 <template>
-  <div ref="map" style="height: 550px; width: 1000px"></div>
+  <div ref="map" style="height: 550px; width: 1000px" @click="GoTo"></div>
 </template>
 
 <script>
 import * as echarts from "echarts";
 import "../js/map.js";
+import { mapMutations } from "vuex";
 export default {
   name: "EchartsMap",
+  data() {
+    return {
+      address: "",
+    };
+  },
   mounted() {
+    var this_ = this;
     var myChart = echarts.init(this.$refs.map);
     var map = [
       { area: "河南", cnt: 2 },
@@ -95,10 +102,26 @@ export default {
     // 使用刚指定的配置项和数据显示图表。
     myChart.setOption(option);
     myChart.on("click", function (params) {
+      this_.address = params.name;
+      // this.$router.push({
+      //   name: "datashow",
+      //   params: {
+      //     adr: adrr,
+      //   },
+      // });
       //点击事件
       if (params.componentType === "series") {
       }
     });
+  },
+  methods: {
+    GoTo() {
+      this.$store.commit("GetAdd", this.address);
+      this.$bus.$emit("adr", this.address);
+      this.$router.push({
+        name: "datashow",
+      });
+    },
   },
 };
 </script>
